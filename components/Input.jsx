@@ -1,20 +1,23 @@
 'use client';
 import React from 'react';
 
-const Input = React.memo(({ svg, placeholder, type, value, onChange }) => {
-  return (
-    <>
-      {svg}
-      <input
-        placeholder={placeholder}
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="w-full bg-transparent"
-        required
-      />
-    </>
-  );
-});
+const Input = React.memo(
+  ({ svg, name, placeholder, type, value, onChange }) => {
+    return (
+      <div className="mb-4 flex">
+        {svg}
+        <input
+          placeholder={placeholder}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          className="border-b-2 border-mint text-[16px] outline-none"
+          required
+        />
+      </div>
+    );
+  },
+);
 
 export default Input;

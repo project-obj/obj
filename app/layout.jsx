@@ -9,11 +9,11 @@ export const metadata = {
 const RootLayout = ({ children }) => {
   return (
     <html lang="ko">
-      <body
-        className={`font-pretendard box-border bg-[#F5EFE7] text-gray text-body`}
-      >
-        <Navbar />
-        {children}
+      <body className="bg-[#F5EFE7] text-body text-gray">
+        <div className="box-border flex min-h-screen w-screen flex-col items-center justify-start font-pretendard">
+          <Navbar />
+          {children}
+        </div>
       </body>
     </html>
   );

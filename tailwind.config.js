@@ -15,7 +15,8 @@ module.exports = {
       focused: '#4F709C',
       login: '#CAC2B8',
       light: '#9596A2',
-      mint: '#C2DEDC',
+      mint: '#27E1C1',
+      'mint-em':'#0EA293'
     },
     screens: {
       mob: '375px',

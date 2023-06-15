@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import FormField from '@/components/FormField';
 import Input from '@/components/Input';
 import IdCard from '@/components/svg/IdCard';
 import Lock from '@/components/svg/Lock';
@@ -29,50 +28,16 @@ const SignUp = () => {
   };
 
   return (
-    <main className="flex flex-col justify-center items-center h-[calc(100vh/1.5)]">
+    <main className="flex h-[calc(100vh/1.5)] flex-col items-center justify-center">
       <div
         className={`
-        bg-SignUp w-[300px] md:w-[420px] rounded-lg shadow-lg 
-        overflow-hidden before:content-[""] before:absolute 
-        before:bg-transparent before:w-[55px] 
-        before:right-[40px] before:bottom-[45px] 
-        before:h-[55px] before:z-10`}
+        bg-SignUp before:bg-transparent w-[300px] overflow-hidden rounded-lg 
+        shadow-lg before:absolute before:bottom-[45px] 
+        before:right-[40px] before:z-10 
+        before:h-[55px] before:w-[55px] 
+        before:content-[""] md:w-[420px]`}
       >
-        <div className="block text-center bg-mint">
-          <FormField>
-            <Input
-              svg={<IdCard />}
-              placeholder="ID"
-              type="text"
-              value={idInput}
-              onChange={(e) => {
-                setIdInput(e.target.value);
-              }}
-            />
-          </FormField>
-          <FormField>
-            <Input
-              svg={<IdCard />}
-              placeholder="E-mail"
-              type="email"
-              value={emailInput}
-              onChange={(e) => {
-                setEmailInput(e.target.value);
-              }}
-            />
-          </FormField>
-          <FormField>
-            <Input
-              svg={<IdCard />}
-              placeholder="성함을 입력해주세요."
-              type="text"
-              value={nameInput}
-              onChange={(e) => {
-                setNameInput(e.target.value);
-              }}
-            />
-          </FormField>
-
+        <div className="block bg-mint text-center">
           <Input
             svg={<Lock />}
             placeholder="Password"
