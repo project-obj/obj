@@ -11,12 +11,9 @@ module.exports = {
       white: '#ffffff',
       back: '#F5EFE7',
       beige: '#D8C4B6',
-      navy: '#213555',
-      focused: '#4F709C',
-      login: '#CAC2B8',
       light: '#9596A2',
       mint: '#27E1C1',
-      'mint-em':'#0EA293'
+      'mint-em': '#0EA293',
     },
     screens: {
       mob: '375px',

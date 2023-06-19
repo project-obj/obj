@@ -12,7 +12,7 @@ const Input = React.memo(
           type={type}
           value={value}
           onChange={onChange}
-          className="border-b-2 border-mint text-[16px] outline-none"
+          className="border-b-2 border-mint px-2 text-[16px] outline-none"
           required
         />
       </div>

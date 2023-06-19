@@ -1,5 +1,8 @@
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import axios from 'axios';
+
+axios.defaults.withCredentials = true;
 
 export const metadata = {
   title: 'Object',
@@ -9,7 +12,7 @@ export const metadata = {
 const RootLayout = ({ children }) => {
   return (
     <html lang="ko">
-      <body className="bg-[#F5EFE7] text-body text-gray">
+      <body className="bg-back text-body text-gray">
         <div className="box-border flex min-h-screen w-screen flex-col items-center justify-start font-pretendard">
           <Navbar />
           {children}

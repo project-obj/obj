@@ -2,13 +2,11 @@ import Banner from '@/components/Banner';
 
 const Home = () => {
   return (
-    <div>
+    <div className="h-[90vh] bg-gradient-to-br from-mint to-mint-em">
       <Banner />
       <main className="px-auto mt-0">
-        <div className="container mx-auto flex-col items-center justify-center">
-          <div className="h-[9000px]">
-            <p>1231231</p>
-          </div>
+        <div className="flex-col items-center justify-center">
+          <div className="container"></div>
         </div>
       </main>
     </div>
