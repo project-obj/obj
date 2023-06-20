@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import UserFormWrapper from './UserFormWrapper';
 import Input from '@/components/Input';
@@ -15,6 +15,7 @@ const SignUp = () => {
   const { userData } = useCurrentUser();
   const router = useRouter();
   const [nameInput, setNameInput] = useInput('');
+  const [emailInput, setEmailInput] = useInput('');
   const [idInput, setIdInput] = useInput('');
   const [pwInput, setPwInput] = useInput('');
 
@@ -24,14 +25,16 @@ const SignUp = () => {
 
       try {
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_SERVER}/user/signup`,
+          `${process.env.NEXT_PUBLIC_SERVER}/user/join`,
           {
             name: nameInput,
-            userid: idInput,
+            loginid: idInput,
             password: pwInput,
+            email: emailInput,
           },
         );
-        if (res.status === 201) {
+
+        if (res.status === 200) {
           router.push('/user/login');
         }
       } catch (error) {
@@ -40,6 +43,12 @@ const SignUp = () => {
     },
     [nameInput, idInput, pwInput],
   );
+
+  useEffect(() => {
+    if (userData) {
+      return router.push('/');
+    }
+  }, []);
 
   if (userData) {
     return router.push('/');
@@ -59,6 +68,12 @@ const SignUp = () => {
           onChange={setNameInput}
         />
         <Input
+          type="email"
+          placeholder="이메일을 입력해주세요."
+          value={emailInput}
+          onChange={setEmailInput}
+        />
+        <Input
           type="text"
           placeholder="ID를 입력해주세요."
           value={idInput}
@@ -73,7 +88,7 @@ const SignUp = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="inline-block rounded-full border-2 border-mint bg-mint px-12 py-2 font-semibold text-white hover:bg-white hover:text-mint"
+            className="inline-block rounded-full border-2 border-mint bg-mint px-8 py-2 font-semibold text-white hover:bg-white hover:text-mint"
           >
             회원가입
           </button>

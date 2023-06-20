@@ -8,8 +8,6 @@ import Script from 'next/script';
 import Cookies from 'js-cookie';
 import useCurrentUser from '@/hooks/useCurrentUser';
 
-import { useRouter } from 'next/navigation';
-
 const Navbar = () => {
   const { userData, mutate } = useCurrentUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -79,7 +77,7 @@ const Navbar = () => {
                   <div
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
-                    className=" mx-2 px-2"
+                    className="mx-2 px-2"
                   >
                     <button href="/user">
                       <p className="hover:scale-110 hover:text-mint-em">
@@ -87,22 +85,20 @@ const Navbar = () => {
                       </p>
                     </button>
                     {isDropdownOpen && (
-                      <div className="divide top-50 absolute right-0 w-32 divide-y rounded bg-white text-gray shadow-lg">
-                        <button className="px-6 py-2">
-                          <Link
-                            onClick={() => setIsMenuOpened(false)}
-                            href="/user"
-                          >
-                            <p className="text-center">마이페이지</p>
-                          </Link>
-                        </button>
-                        <button
-                          className="px-6 py-2"
-                          onClick={logout}
-                          href="/user"
+                      <div className="top-50 divide absolute right-0 z-40 flex w-32 flex-col divide-y divide-mint rounded border border-mint bg-white text-gray shadow-lg">
+                        <Link
+                          onClick={() => setIsMenuOpened(false)}
+                          href={`/user/${Cookies.get('userid')}`}
                         >
-                          <p className="text-center">로그아웃</p>
-                        </button>
+                          <button className="mx-auto w-full px-6">
+                            마이페이지
+                          </button>
+                        </Link>
+                        <Link onClick={logout} href="/user/login">
+                          <button className="mx-auto w-full px-6">
+                            로그아웃
+                          </button>
+                        </Link>
                       </div>
                     )}
                   </div>
@@ -136,12 +132,21 @@ const Navbar = () => {
               {!!userData ? (
                 <>
                   <li className="px-6 py-3">
-                    <Link onClick={() => setIsMenuOpened(false)} href="/user">
+                    <Link
+                      onClick={() => setIsMenuOpened(false)}
+                      href={`/user/${Cookies.get('userid')}`}
+                    >
                       <p className="block text-center">마이페이지</p>
                     </Link>
                   </li>
                   <li className="px-6 py-3">
-                    <Link onClick={() => setIsMenuOpened(false)} href="/user">
+                    <Link
+                      onClick={() => {
+                        setIsMenuOpened(false);
+                        logout();
+                      }}
+                      href="/user/login"
+                    >
                       <p className="block text-center">로그아웃</p>
                     </Link>
                   </li>

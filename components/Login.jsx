@@ -22,24 +22,21 @@ const Login = () => {
 
   const { userData, error, isLoading, mutate } = useCurrentUser();
 
-  console.log(isLoading);
   const handleLoginSubmit = useCallback(
     (e) => {
       e.preventDefault();
       setLogInError(false);
 
       axios
-        .post(
-          `${process.env.NEXT_PUBLIC_SERVER}/user/login`,
-          {
-            userid: idInput,
-            password: pwInput,
-          },
-          {},
-        )
+        .post(`${process.env.NEXT_PUBLIC_SERVER}/user/login`, {
+          userid: idInput,
+          password: pwInput,
+        })
         .then((res) => {
           Cookies.set('token', res.data.token, { expires: 1 });
           Cookies.set('name', res.data.name, { expires: 1 });
+          Cookies.set('userid', idInput, { expires: 1 });
+          axios.defaults.headers.common['token'] = res.data.token;
           mutate();
         })
         .catch((error) => {
@@ -85,7 +82,7 @@ const Login = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="inline-block rounded-full border-2 border-mint bg-mint px-12 py-2 font-semibold text-white hover:bg-white hover:text-mint"
+            className="inline-block rounded-full border-2 border-mint bg-mint px-8 py-2 font-semibold text-white hover:bg-white hover:text-mint"
           >
             로그인
           </button>

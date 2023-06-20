@@ -6,8 +6,13 @@ import PlaceMenu from '@/components/PlaceMenu';
 import SearchResults from './SearchResults';
 import useInput from '@/hooks/useInput';
 import addBookmarkPlace from '@/utils/addBookmarkPlace';
+import SmallLogo from './SmallLogo';
+import useCurrentUser from '@/hooks/useCurrentUser';
+import { useRouter } from 'next/navigation';
 
 const KakaoMap = () => {
+  const router = useRouter();
+  const { userData } = useCurrentUser();
   const mapRef = useRef();
 
   const [info, setInfo] = useState();
@@ -52,6 +57,8 @@ const KakaoMap = () => {
     });
   };
 
+  if (!userData) router.push('/user/login');
+
   return (
     <>
       <PlaceMenu />
@@ -64,7 +71,7 @@ const KakaoMap = () => {
             level={5}
           >
             <div className="max-h-1/2 max-w-1/3 absolute left-2 top-2 z-10">
-              <div className="rounded-lg border border-mint/60 bg-white/60">
+              <div className="rounded-lg border border-mint/60 bg-white/90">
                 <SmallLogo />
                 <form
                   className={`${
@@ -115,7 +122,7 @@ const KakaoMap = () => {
                   <CustomOverlayMap
                     zIndex={20}
                     position={marker.position}
-                    yAnchor={1.4}
+                    yAnchor={1.5}
                   >
                     <div className="px-auto my-1 flex h-full w-full flex-col rounded border border-mint-em bg-white py-2">
                       <h3 className="mx-auto p-2 text-center">
