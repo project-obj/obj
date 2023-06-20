@@ -16,12 +16,16 @@ const SearchedList = ({
   onMouseOut,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [hasPlace, setHasPlace] = useState('등록하기!');
 
   const showModal = () => {
+    setHasPlace('등록하기!');
+
     setModalVisible(true);
   };
 
   const closeModal = () => {
+    setHasPlace('등록하기!');
     setModalVisible(false);
   };
 
@@ -32,7 +36,7 @@ const SearchedList = ({
         <p>{address}</p>
       </section>
       <p className="mt-6">
-        <span className="font-extrabold text-mint-em">{name}</span> 북마크 등록!
+        <span className="font-extrabold text-mint-em">{name}</span> {hasPlace}
       </p>
       <div className="flex items-center justify-center">
         <button
@@ -43,7 +47,15 @@ const SearchedList = ({
         </button>
         <button
           onClick={() =>
-            addBookmarkPlace(code, name, roadAddress, address, lat, lng)
+            addBookmarkPlace(
+              code,
+              name,
+              roadAddress,
+              address,
+              lat,
+              lng,
+              setHasPlace,
+            )
           }
           className="mx-2 rounded-full border-2 border-mint bg-mint px-4 py-2 font-semibold text-white hover:bg-white hover:text-mint"
         >

@@ -16,7 +16,6 @@ import useCurrentUser from '@/hooks/useCurrentUser';
 
 const Login = () => {
   const router = useRouter();
-  const [logInError, setLogInError] = useState(false);
   const [idInput, setIdInput] = useInput('');
   const [pwInput, setPwInput] = useInput('');
 
@@ -25,7 +24,6 @@ const Login = () => {
   const handleLoginSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      setLogInError(false);
 
       axios
         .post(`${process.env.NEXT_PUBLIC_SERVER}/user/login`, {
@@ -37,6 +35,7 @@ const Login = () => {
           Cookies.set('name', res.data.name, { expires: 1 });
           Cookies.set('userid', idInput, { expires: 1 });
           axios.defaults.headers.common['token'] = res.data.token;
+          router.push('/user/' + Cookies.get('userid'));
           mutate();
         })
         .catch((error) => {
@@ -50,14 +49,10 @@ const Login = () => {
   useEffect(() => {
     if (!error && userData) {
       console.log('로그인됨', userData);
-      return router.push('/');
+      return router.push('/user/' + Cookies.get('userid'));
     }
-  }, [userData]);
+  }, []);
 
-  if (!error && userData) {
-    console.log('로그인됨', userData);
-    return router.push('/');
-  }
   return (
     <UserFormWrapper
       type="login"

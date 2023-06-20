@@ -1,7 +1,15 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const addBookmarkPlace = async (code, name, roadAddress, address, lat, lng) => {
+const addBookmarkPlace = async (
+  code,
+  name,
+  roadAddress,
+  address,
+  lat,
+  lng,
+  setHasPlace,
+) => {
   await axios({
     method: 'POST',
     headers: {
@@ -19,7 +27,16 @@ const addBookmarkPlace = async (code, name, roadAddress, address, lat, lng) => {
       lng,
     },
     withCredentials: true,
-  });
+  })
+    .then((res) => {
+      console.log(res);
+      res.data.success;
+    })
+    .then((success) =>
+      success
+        ? setHasPlace('북마크했어요!')
+        : setHasPlace('이미 북마크했어요!'),
+    );
 };
 
 export default addBookmarkPlace;

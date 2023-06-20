@@ -24,6 +24,8 @@ const Navbar = () => {
   const logout = () => {
     Cookies.remove('name');
     Cookies.remove('token');
+    Cookies.remove('userid');
+
     mutate();
   };
 
@@ -59,7 +61,7 @@ const Navbar = () => {
               </button>
             </div>
             {/* 태블릿++ */}
-            <div className="hidden w-80 md:block">
+            <div className="w-100 hidden md:block">
               <ul className="flex items-center justify-end">
                 {!!userData && (
                   <button className=" mx-2 px-2">
@@ -88,7 +90,8 @@ const Navbar = () => {
                       <div className="top-50 divide absolute right-0 z-40 flex w-32 flex-col divide-y divide-mint rounded border border-mint bg-white text-gray shadow-lg">
                         <Link
                           onClick={() => setIsMenuOpened(false)}
-                          href={`/user/${Cookies.get('userid')}`}
+                          href={`/user/${userData}`}
+                          className={`${userData ? '' : 'hidden'}`}
                         >
                           <button className="mx-auto w-full px-6">
                             마이페이지
@@ -134,7 +137,8 @@ const Navbar = () => {
                   <li className="px-6 py-3">
                     <Link
                       onClick={() => setIsMenuOpened(false)}
-                      href={`/user/${Cookies.get('userid')}`}
+                      href={`/user/${userData}`}
+                      className={`${userData ? '' : 'hidden'}`}
                     >
                       <p className="block text-center">마이페이지</p>
                     </Link>
