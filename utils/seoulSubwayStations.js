@@ -1,7 +1,3 @@
-import React, { useState } from 'react';
-import Autosuggest from 'react-autosuggest';
-import haversine from 'haversine';
-
 const seoulSubwayStations = [
   {
     name: '가락시장',
@@ -1050,49 +1046,4 @@ const seoulSubwayStations = [
   { name: '명지대', position: { lat: 37.237964, lng: 127.190294 } },
 ];
 
-const SearchStation = ({ setChosenStation }) => {
-  const [stationInput, setStationInput] = useState('');
-  const [recommendations, setRecommendations] = useState([]);
-
-  const handleInput = (event) => {
-    const inputText = event.target.value;
-    setStationInput(inputText);
-
-    const filteredStations = seoulSubwayStations.filter((station) =>
-      station.name.includes(inputText),
-    );
-    if (!inputText.trim().length) return;
-
-    const recommendationList = filteredStations.map((station) => station);
-    setRecommendations(recommendationList);
-  };
-
-  return (
-    <form className="mx-auto flex flex-col">
-      <input
-        placeholder="지하철 역 입력!"
-        type="text"
-        onChange={handleInput}
-        className="border-b-1 mx-1 w-full border-b border-gray/30 bg-white/50 px-1 outline-none"
-      />
-      <div className="devide flex flex-col divide-y">
-        {recommendations.slice(0, 10).map((recommendation, index) => (
-          <button
-            key={index}
-            className="py-2"
-            onClick={() => {
-              const deepCopyRecommendation = JSON.parse(
-                JSON.stringify(recommendation),
-              );
-
-              setChosenStation(deepCopyRecommendation);
-            }}
-          >
-            {recommendation.name}
-          </button>
-        ))}
-      </div>
-    </form>
-  );
-};
-export default SearchStation;
+export default seoulSubwayStations;

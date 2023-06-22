@@ -5,8 +5,8 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 export const metadata = {
-  title: 'Object',
-  description: '가고 싶었잖아요. Object',
+  title: 'MARKER',
+  description: '가고싶은 곳엔. MARKER',
 };
 
 const RootLayout = ({ children }) => {

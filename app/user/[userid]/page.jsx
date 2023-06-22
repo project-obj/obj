@@ -1,15 +1,13 @@
 'use client';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Map, MapMarker, CustomOverlayMap, useMap } from 'react-kakao-maps-sdk';
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import useBookmark from '@/hooks/useBookmark';
 import useCurrentUser from '@/hooks/useCurrentUser';
 
 const page = ({ params }) => {
-  const { userData } = useCurrentUser;
   const [myData, setMydata] = useState([]);
-  const { mutate } = useBookmark();
+
   useEffect(() => {
     axios
       .get(`${process.env.NEXT_PUBLIC_SERVER}/user/${params.userid}`, {
@@ -19,15 +17,11 @@ const page = ({ params }) => {
         },
         withCredentials: true,
       })
-      .then((res) => res.data.Places)
+      .then((res) => res?.data?.Places || [])
       .then((places) => {
         setMydata([...places]);
       });
   }, []);
-
-  useEffect(() => {
-    console.log(myData);
-  }, [myData]);
 
   const mapRef = useRef();
 

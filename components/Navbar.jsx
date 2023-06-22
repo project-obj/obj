@@ -36,8 +36,8 @@ const Navbar = () => {
         src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&libraries=services,clusterer&autoload=false`}
       ></Script>
       <header className="relative h-[10vh] w-screen">
-        <div className="sticky left-0 right-0 top-0 z-40 h-full border-b border-mint-em/[0.2] bg-white py-[15px]">
-          <nav className="relative mx-auto flex flex-wrap items-center justify-between px-[20px]">
+        <div className="sticky left-0 right-0 top-0 z-40 h-full border-b border-mint-em/[0.2] bg-white">
+          <nav className="py-auto relative mx-auto my-auto flex h-full flex-wrap items-center justify-between px-[20px]">
             <div>
               <Link
                 href="/"

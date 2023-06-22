@@ -35,7 +35,7 @@ const Login = () => {
           Cookies.set('name', res.data.name, { expires: 1 });
           Cookies.set('userid', idInput, { expires: 1 });
           axios.defaults.headers.common['token'] = res.data.token;
-          router.push('/user/' + Cookies.get('userid'));
+          router.push('/');
           mutate();
         })
         .catch((error) => {
@@ -48,8 +48,7 @@ const Login = () => {
 
   useEffect(() => {
     if (!error && userData) {
-      console.log('로그인됨', userData);
-      return router.push('/user/' + Cookies.get('userid'));
+      return router.push('/');
     }
   }, []);
 

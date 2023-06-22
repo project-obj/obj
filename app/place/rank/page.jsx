@@ -7,8 +7,12 @@ import axios from 'axios';
 import PlaceList from '@/components/PlaceList';
 
 const page = () => {
-  const mapRef = useRef();
   const [hotPlaces, setHotPlaces] = useState([]);
+  const [mapCenter, setMapCenter] = useState({
+    lat: 37.555677404758484,
+    lng: 126.97167262147268,
+  });
+  const [markerLocation, setMarkerLocation] = useState();
 
   useEffect(() => {
     axios
@@ -17,7 +21,6 @@ const page = () => {
       .then((data) => setHotPlaces(data));
   }, []);
 
-  console.log(hotPlaces);
   return (
     <div className="h-[90vh] w-screen">
       <div className="mx-auto flex h-full items-start justify-around">
@@ -30,17 +33,33 @@ const page = () => {
               lat={place.lat}
               lng={place.lng}
               cnt={place.cnt}
+              onClick={() => {
+                setMapCenter({ lat: place.lat, lng: place.lng });
+                setMarkerLocation({ lat: place.lat, lng: place.lng });
+              }}
             />
           ))}
         </div>
 
         <div className="hidden h-[90vh] w-full md:block">
           <Map
-            ref={mapRef}
-            center={{ lat: 37.555677404758484, lng: 126.97167262147268 }}
+            center={mapCenter}
             style={{ width: '100%', height: '100%' }}
             level={5}
-          ></Map>
+          >
+            {markerLocation && (
+              <MapMarker
+                position={markerLocation}
+                image={{
+                  src: '/img/marker.png',
+                  size: {
+                    width: 40,
+                    height: 40,
+                  },
+                }}
+              />
+            )}
+          </Map>
         </div>
       </div>
     </div>

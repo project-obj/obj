@@ -6,7 +6,6 @@ import PlaceModal from './modal/placeModal';
 
 const SearchedList = ({
   code,
-  content,
   name,
   roadAddress,
   address,
@@ -64,8 +63,9 @@ const SearchedList = ({
       </div>
     </>
   );
+
   return (
-    <div key={content} className="h-4/5">
+    <div>
       {modalVisible && (
         <PlaceModal
           closeModal={closeModal}

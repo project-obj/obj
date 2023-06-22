@@ -14,20 +14,23 @@ const SearchResults = ({ markers, setInfo, setIsListOpen }) => {
   };
 
   return (
-    <div className="divide divide-y divide-mint">
+    <div className="divide w-full divide-y divide-mint">
       {currentMarkers.map((marker) => (
-        <SearchedList
+        <div
           key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-          code={marker.category_group_code}
-          content={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-          roadAddress={marker.road_address_name}
-          address={marker.address_name}
-          name={marker.place_name}
-          lat={marker.y}
-          lng={marker.x}
-          onMouseOver={() => setInfo(marker)}
-          onMouseOut={() => setInfo()}
-        />
+          className="h-4/5 w-full"
+        >
+          <SearchedList
+            code={marker.category_group_code}
+            roadAddress={marker.road_address_name}
+            address={marker.address_name}
+            name={marker.place_name}
+            lat={marker.y}
+            lng={marker.x}
+            onMouseOver={() => setInfo(marker)}
+            onMouseOut={() => setInfo()}
+          />
+        </div>
       ))}
 
       <div className="flex justify-between py-2">
