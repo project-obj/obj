@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
 import axios from 'axios';
@@ -13,6 +13,7 @@ const page = () => {
     lng: 126.97167262147268,
   });
   const [markerLocation, setMarkerLocation] = useState();
+  const [selectedPlace, setSelectedPlace] = useState('');
 
   useEffect(() => {
     axios
@@ -27,6 +28,7 @@ const page = () => {
         <div className=" mt-10 flex w-[300px] flex-col items-center justify-start">
           {hotPlaces.map((place) => (
             <PlaceList
+              key={place.place_name}
               name={place.place_name}
               address={place.address}
               roadAddress={place.roadAddress}
@@ -36,6 +38,10 @@ const page = () => {
               onClick={() => {
                 setMapCenter({ lat: place.lat, lng: place.lng });
                 setMarkerLocation({ lat: place.lat, lng: place.lng });
+                setSelectedPlace({
+                  name: place.place_name,
+                  address: place.roadAddress,
+                });
               }}
             />
           ))}
@@ -48,16 +54,30 @@ const page = () => {
             level={5}
           >
             {markerLocation && (
-              <MapMarker
-                position={markerLocation}
-                image={{
-                  src: '/img/marker.png',
-                  size: {
-                    width: 40,
-                    height: 40,
-                  },
-                }}
-              />
+              <>
+                <MapMarker
+                  position={markerLocation}
+                  image={{
+                    src: '/img/marker.png',
+                    size: {
+                      width: 40,
+                      height: 40,
+                    },
+                  }}
+                />
+                <CustomOverlayMap
+                  zIndex={30}
+                  position={markerLocation}
+                  yAnchor={1.5}
+                >
+                  <div className="rounded border border-mint-em bg-white py-2 px-2 text-center">
+                    <div className="flex flex-col">
+                      <h2 className="text-extrabold">{selectedPlace.name}</h2>
+                      <p>{selectedPlace.address}</p>
+                    </div>
+                  </div>
+                </CustomOverlayMap>
+              </>
             )}
           </Map>
         </div>

@@ -44,15 +44,17 @@ const KakaoMap = () => {
         },
         withCredentials: true,
       })
-      .then((res) => res.data.Places)
+      .then((res) => res?.data?.Places || [])
       .then((places) => {
         setMydata([...places]);
+      })
+      .catch((err) => {
+        console.log(err.statusText);
       });
 
-  const myBookmarkMode = () => {
+  const myBookmarkMode = async () => {
     if (isMyBookmark) return;
-    setIsMyBookmark(true);
-    getMyBookmark();
+    await getMyBookmark();
     const bookmarks = myData.map((bookmark) => {
       return {
         position: {
@@ -65,6 +67,7 @@ const KakaoMap = () => {
     });
 
     setMarkers(bookmarks);
+    setIsMyBookmark(true);
   };
 
   const bookmarkMode = () => {
@@ -293,13 +296,11 @@ const KakaoMap = () => {
                     position={marker.position}
                     yAnchor={1.5}
                   >
-                    <div className="px-auto my-1 flex h-full w-full flex-col rounded border border-mint-em bg-white py-2">
-                      <h3 className="mx-auto p-2 text-center">
-                        {marker.content}
-                      </h3>
+                    <div className="px-auto my-1 flex flex-col rounded border border-mint-em bg-white py-2 text-center">
+                      <h3 className="mx-auto p-2">{marker.content}</h3>
                       <button
                         className="mx-auto content-center rounded border border-mint px-2 py-1 text-mint md:hidden"
-                        onClick={() =>
+                        onClick={() => {
                           addBookmarkPlace(
                             marker.category_group_code,
                             marker.content,
@@ -308,8 +309,22 @@ const KakaoMap = () => {
                             marker.y,
                             marker.x,
                             setHasPlace,
-                          )
-                        }
+                          );
+                          getMyBookmark();
+
+                          setMarkers(
+                            myData.map((bookmark) => {
+                              return {
+                                position: {
+                                  lat: bookmark.lat,
+                                  lng: bookmark.lng,
+                                },
+                                content: bookmark.place_name,
+                                ...bookmark,
+                              };
+                            }),
+                          );
+                        }}
                       >
                         {hasPlace}
                       </button>
