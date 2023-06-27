@@ -16,6 +16,7 @@ import getNearPlaces from '@/utils/getNearPlaces';
 
 import seoulSubwayStations from '@/utils/seoulSubwayStations';
 import { chosungIncludes, hangulIncludes } from '@toss/hangul';
+import PlaceModal from './modal/placeModal';
 
 const KakaoMap = () => {
   const router = useRouter();
@@ -92,6 +93,20 @@ const KakaoMap = () => {
   const [stationInput, setStationInput] = useState('');
   const [recommendations, setRecommendations] = useState([]);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [hasPlace, setHasPlace] = useState('등록하기!');
+
+  const showModal = () => {
+    setHasPlace('등록하기!');
+
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setHasPlace('등록하기!');
+    setModalVisible(false);
+  };
+
   const handleInput = (event) => {
     setStationInput(event.target.value);
 
@@ -110,7 +125,6 @@ const KakaoMap = () => {
   const [info, setInfo] = useState();
   const [keyword, onChangeKeyword] = useInput('');
   const [isListOpen, setIsListOpen] = useState(true);
-  const [hasPlace, setHasPlace] = useState('등록');
 
   const [myData, setMydata] = useState([]);
 
@@ -118,8 +132,6 @@ const KakaoMap = () => {
     if (!userData) return;
     getMyBookmark();
   }, [userData]);
-
-  useEffect(() => {}, [myData]);
 
   const searchPlace = (e) => {
     e.preventDefault();
@@ -316,6 +328,7 @@ const KakaoMap = () => {
             {markers.map(
               (marker) =>
                 info &&
+                info.address_name === marker.address_name &&
                 info.content === marker.content && (
                   <CustomOverlayMap
                     key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
@@ -326,26 +339,39 @@ const KakaoMap = () => {
                     <div className="px-auto my-1 flex flex-col rounded border border-mint-em bg-white py-2 text-center">
                       <h3 className="mx-auto p-2">{marker.content}</h3>
                       {!isMyBookmark && (
-                        <button
-                          className="mx-auto content-center rounded border border-mint px-2 py-1 text-mint md:hidden"
-                          onClick={() => {
-                            addBookmarkPlace(
-                              marker.category_group_code,
-                              marker.content,
-                              marker.road_address_name,
-                              marker.address_name,
-                              marker.y,
-                              marker.x,
-                              setHasPlace
-                            );
-                            getMyBookmark();
-                          }}
-                        >
-                          {hasPlace}
-                        </button>
+                        <div>
+                          <button
+                            className="mx-auto content-center rounded border border-mint px-2 py-1 text-mint md:hidden"
+                            onClick={showModal}
+                          >
+                            등록하기
+                          </button>
+                        </div>
                       )}
                     </div>
                   </CustomOverlayMap>
+                )
+            )}
+            {markers.map(
+              (marker) =>
+                modalVisible && (
+                  <PlaceModal
+                    hasPlace={hasPlace}
+                    roadAddress={marker.roadAddress}
+                    closeModal={closeModal}
+                    name={marker.content}
+                    onClick={() =>
+                      addBookmarkPlace(
+                        marker.category_group_code,
+                        marker.content,
+                        marker.road_address_name,
+                        marker.address_name,
+                        marker.y,
+                        marker.x,
+                        setHasPlace
+                      )
+                    }
+                  />
                 )
             )}
           </Map>

@@ -13,11 +13,10 @@ const Input = React.memo(
           value={value}
           onChange={onChange}
           className="border-b-2 border-mint px-2 text-[16px] outline-none"
-          required
         />
       </div>
     );
-  },
+  }
 );
 
 export default Input;

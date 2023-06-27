@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
+
 import UserInfo from '@/components/userinfo';
 import Cookies from 'js-cookie';
 
@@ -20,19 +22,26 @@ const page = ({ params }) => {
       .then((data) => setUserDatas([...data]));
   }, []);
 
+  console.log(userDatas);
+
   return (
     <div className="flex w-screen flex-col items-center justify-start">
       <div className="flex h-[15vh] items-center">
-        <button className="my-auto box-border block rounded-md border-none border-mint bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
-          등록하기
-        </button>
+        <Link href={'/place'}>
+          <button className="my-auto box-border block rounded-md border-none border-mint bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
+            등록하러 가기!
+          </button>
+        </Link>
       </div>
 
       <div className="h-[75vh] w-screen">
         <div className="flex h-[90%] justify-around">
           <div className="w-[30vw] flex-col items-center justify-start rounded bg-white">
             {userDatas.map((place) => (
-              <UserInfo name={place.place_name} />
+              <UserInfo
+                key={`${place.id}: ${place.place_name}`}
+                name={place.place_name}
+              />
             ))}
           </div>
           <div className="w-[45vw] flex-col items-center justify-start rounded bg-white">

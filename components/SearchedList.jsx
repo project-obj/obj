@@ -28,49 +28,19 @@ const SearchedList = ({
     setModalVisible(false);
   };
 
-  const modalContent = (
-    <>
-      <section>
-        <p>{roadAddress}</p>
-        <p>{address}</p>
-      </section>
-      <p className="mt-6">
-        <span className="font-extrabold text-mint-em">{name}</span> {hasPlace}
-      </p>
-      <div className="flex items-center justify-center">
-        <button
-          onClick={closeModal}
-          className="mx-2 inline-block rounded-full border-2 border-mint px-4 py-2 font-semibold text-mint hover:bg-mint hover:text-white"
-        >
-          닫기
-        </button>
-        <button
-          onClick={() =>
-            addBookmarkPlace(
-              code,
-              name,
-              roadAddress,
-              address,
-              lat,
-              lng,
-              setHasPlace
-            )
-          }
-          className="mx-2 rounded-full border-2 border-mint bg-mint px-4 py-2 font-semibold text-white hover:bg-white hover:text-mint"
-        >
-          추가하기
-        </button>
-      </div>
-    </>
-  );
+  const addPlace = () => {
+    addBookmarkPlace(code, name, roadAddress, address, lat, lng, setHasPlace);
+  };
 
   return (
     <div key={`${name} - ${address} - ${lat} - ${lng}`}>
       {modalVisible && (
         <PlaceModal
+          hasPlace={hasPlace}
+          roadAddress={roadAddress}
           closeModal={closeModal}
-          title={name}
-          content={modalContent}
+          name={name}
+          onClick={addPlace}
         />
       )}
       <div onMouseOver={onMouseOver} onMouseOut={onMouseOut}>

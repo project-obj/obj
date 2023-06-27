@@ -8,7 +8,7 @@ const addBookmarkPlace = async (
   address,
   lat,
   lng,
-  setHasPlace,
+  setHasPlace
 ) => {
   await axios({
     method: 'POST',
@@ -29,11 +29,9 @@ const addBookmarkPlace = async (
     withCredentials: true,
   })
     .then((res) => {
-      console.log(res.data);
       return res.data.success;
     })
     .then((success) => {
-      console.log(success);
       success
         ? setHasPlace('북마크했어요!')
         : setHasPlace('이미 북마크했어요!');
