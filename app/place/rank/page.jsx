@@ -70,7 +70,7 @@ const page = () => {
                   position={markerLocation}
                   yAnchor={1.5}
                 >
-                  <div className="rounded border border-mint-em bg-white py-2 px-2 text-center">
+                  <div className="rounded border border-mint-em bg-white px-2 py-2 text-center">
                     <div className="flex flex-col">
                       <h2 className="text-extrabold">{selectedPlace.name}</h2>
                       <p>{selectedPlace.address}</p>

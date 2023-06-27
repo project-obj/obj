@@ -1,12 +1,11 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
-import { Map, MapMarker, CustomOverlayMap, useMap } from 'react-kakao-maps-sdk';
-import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import useCurrentUser from '@/hooks/useCurrentUser';
+import UserInfo from '@/components/userinfo';
+import Cookies from 'js-cookie';
 
 const page = ({ params }) => {
-  const [myData, setMydata] = useState([]);
+  const [userDatas, setUserDatas] = useState([]);
 
   useEffect(() => {
     axios
@@ -18,49 +17,29 @@ const page = ({ params }) => {
         withCredentials: true,
       })
       .then((res) => res?.data?.Places || [])
-      .then((places) => {
-        setMydata([...places]);
-      });
+      .then((data) => setUserDatas([...data]));
   }, []);
 
-  const mapRef = useRef();
-
-  const EventMarkerContainer = ({ name, position, content }) => {
-    const map = useMap();
-    const [isVisible, setIsVisible] = useState(false);
-
-    return (
-      <MapMarker
-        position={position} // 마커를 표시할 위치
-        onClick={(marker) => map.panTo(marker.getPosition())}
-        onMouseOver={() => setIsVisible(true)}
-        onMouseOut={() => setIsVisible(false)}
-      >
-        {isVisible && content}
-      </MapMarker>
-    );
-  };
-
   return (
-    <div className="flex h-[80vh] w-screen">
-      <div className="relative h-full w-full">
-        <Map
-          ref={mapRef}
-          center={{ lat: 37.555677404758484, lng: 126.97167262147268 }}
-          style={{ width: '100%', height: '100%' }}
-          level={5}
-        >
-          {myData.map((value) => (
-            <EventMarkerContainer
-              key={`EventMarkerContainer-${value.lat}-${value.lng}`}
-              position={{
-                lat: value.lat,
-                lng: value.lng,
-              }}
-              content={value.name}
-            />
-          ))}
-        </Map>
+    <div className="flex w-screen flex-col items-center justify-start">
+      <div className="flex h-[15vh] items-center">
+        <button className="my-auto box-border block rounded-md border-none border-mint bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
+          등록하기
+        </button>
+      </div>
+
+      <div className="h-[75vh] w-screen">
+        <div className="flex h-[90%] justify-around">
+          <div className="w-[30vw] flex-col items-center justify-start rounded bg-white">
+            {userDatas.map((place) => (
+              <UserInfo name={place.place_name} />
+            ))}
+          </div>
+          <div className="w-[45vw] flex-col items-center justify-start rounded bg-white">
+            <h3 className="font-bold">태그</h3>
+            <section>dsds</section>
+          </div>
+        </div>
       </div>
     </div>
   );
