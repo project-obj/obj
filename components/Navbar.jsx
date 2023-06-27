@@ -64,13 +64,13 @@ const Navbar = () => {
             <div className="w-100 hidden md:block">
               <ul className="flex items-center justify-end">
                 {!!userData && (
-                  <button className=" mx-2 px-2">
+                  <button className="mx-2 px-2">
                     <Link className="inline-block px-2" href="/place">
                       <p className="hover:scale-110">북마크</p>
                     </Link>
                   </button>
                 )}
-                <button className=" mx-2 px-2">
+                <button className="mx-2 px-2">
                   <Link className="inline-block px-2" href="/place/rank">
                     <p className="hover:scale-110">핫 플레이스</p>
                   </Link>
@@ -87,7 +87,7 @@ const Navbar = () => {
                       </p>
                     </button>
                     {isDropdownOpen && (
-                      <div className="top-50 divide absolute right-0 z-40 flex w-32 flex-col divide-y divide-mint rounded border border-mint bg-white text-gray shadow-lg">
+                      <div className="top-50 divide absolute right-[15px] z-40 flex w-32 flex-col divide-y divide-mint rounded border border-mint bg-white text-gray shadow-lg">
                         <Link
                           onClick={() => setIsMenuOpened(false)}
                           href={`/user/${userData}`}

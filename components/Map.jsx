@@ -8,6 +8,7 @@ import SearchResults from './SearchResults';
 import useInput from '@/hooks/useInput';
 import addBookmarkPlace from '@/utils/addBookmarkPlace';
 import SmallLogo from './SmallLogo';
+import Overlay from '@/components/Overlay';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
@@ -31,6 +32,7 @@ const KakaoMap = () => {
   const [Maplevel, setMapLevel] = useState(5);
   const [markers, setMarkers] = useState([]);
   const [isMyBookmark, setIsMyBookmark] = useState(false);
+  const [nearPlaces, setNearPlaces] = useState([]);
 
   const getMyBookmark = () =>
     axios
@@ -54,25 +56,35 @@ const KakaoMap = () => {
 
   const myBookmarkMode = async () => {
     if (isMyBookmark) return;
-    await getMyBookmark();
-    const bookmarks = myData.map((bookmark) => {
-      return {
-        position: {
-          lat: bookmark.lat,
-          lng: bookmark.lng,
-        },
-        content: bookmark.place_name,
-        ...bookmark,
-      };
-    });
-
-    setMarkers(bookmarks);
-    setIsMyBookmark(true);
+    await getMyBookmark()
+      .then(() => {
+        return myData.map((bookmark) => {
+          return {
+            position: {
+              lat: bookmark.lat,
+              lng: bookmark.lng,
+            },
+            content: bookmark.place_name,
+            ...bookmark,
+          };
+        });
+      })
+      .then((bookmarks) => {
+        setMarkers(bookmarks);
+        setIsMyBookmark(true);
+      });
   };
 
   const bookmarkMode = () => {
     if (!isMyBookmark) return;
     setIsMyBookmark(false);
+    setChosenStation();
+    setMapCenter({
+      // 지도의 초기 위치
+      center: { lat: 37.555677404758484, lng: 126.97167262147268 },
+      // 지도 위치 변경시 panto를 이용할지에 대해서 정의
+      isPanto: false,
+    });
     setMarkers([]);
   };
 
@@ -185,9 +197,10 @@ const KakaoMap = () => {
             isPanto={mapCenter.isPanto}
             style={{ width: '100%', height: '100%' }}
             level={Maplevel}
+            draggable={true}
           >
             <div className="absolute left-2 top-2 z-10 h-1/2 w-1/3">
-              <div className="rounded-lg border border-mint/60 bg-white/90">
+              <div className="w-full rounded-lg border border-mint/60 bg-white/90 lg:w-1/2">
                 <SmallLogo />
                 {isMyBookmark ? (
                   <div className="mx-auto flex flex-col">
@@ -196,33 +209,41 @@ const KakaoMap = () => {
                       type="text"
                       value={stationInput}
                       onChange={(e) => handleInput(e)}
-                      className="border-b-1 mx-1 w-full border-b border-gray/30 bg-white/50 px-1 outline-none"
+                      className="border-b-1 w-full border-b border-gray/30 bg-white/50 px-3 outline-none"
                     />
                     <div className="devide flex flex-col divide-y">
-                      {recommendations
-                        .slice(0, 10)
-                        .map((recommendation, index) => (
-                          <button
-                            key={index}
-                            className="py-2"
-                            onClick={() => {
-                              const deepCopyRecommendation = JSON.parse(
-                                JSON.stringify(recommendation),
-                              );
-                              console.log(mapRef.current);
+                      {!!stationInput &&
+                        recommendations
+                          .slice(0, 10)
+                          .map((recommendation, index) => (
+                            <button
+                              key={recommendation.name}
+                              className="py-2"
+                              onClick={() => {
+                                const deepCopyRecommendation = JSON.parse(
+                                  JSON.stringify(recommendation)
+                                );
+                                setChosenStation(deepCopyRecommendation);
 
-                              setChosenStation({ ...deepCopyRecommendation });
-                              setMapCenter(() => ({}));
-                              setMapCenter((prev) => ({
-                                ...prev,
-                                center: { ...deepCopyRecommendation.position },
-                              }));
-                              setMapLevel(4);
-                            }}
-                          >
-                            {recommendation.name}
-                          </button>
-                        ))}
+                                setNearPlaces(
+                                  getNearPlaces(
+                                    markers,
+                                    deepCopyRecommendation.position,
+                                    1500
+                                  )
+                                );
+
+                                const moveLatLon = new kakao.maps.LatLng(
+                                  deepCopyRecommendation.position.lat,
+                                  deepCopyRecommendation.position.lng
+                                );
+                                mapRef.current.setLevel(4);
+                                mapRef.current.setCenter(moveLatLon);
+                              }}
+                            >
+                              {recommendation.name}
+                            </button>
+                          ))}
                     </div>
                   </div>
                 ) : (
@@ -258,81 +279,75 @@ const KakaoMap = () => {
               </div>
             </div>
             {chosenStation && (
-              <MapMarker
-                key={`marker-${chosenStation.position.lat},${chosenStation.position.lng}`}
-                position={{
-                  lat: chosenStation.position.lat,
-                  lng: chosenStation.position.lng,
-                }}
-                image={{
-                  src: '/img/standardmarker.png',
-                  size: {
-                    width: 40,
-                    height: 40,
-                  },
-                }}
-              />
-            )}
-
-            {markers.map((marker) => (
               <>
                 <MapMarker
-                  key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-                  position={marker.position}
+                  key={`marker-${chosenStation.position.lat},${chosenStation.position.lng}`}
+                  position={chosenStation.position}
                   image={{
-                    src: '/img/marker.png',
+                    src: '/img/standardmarker.png',
                     size: {
                       width: 40,
                       height: 40,
                     },
                   }}
-                  onClick={() => setInfo(marker)}
-                  onMouseOver={() => setInfo(marker)}
-                  onMouseOut={() => setInfo()}
                 />
-                {info && info.content === marker.content && (
+                <div className="absolute bottom-20 h-1/5 w-full md:bottom-5">
+                  <Overlay nearPlaces={nearPlaces} setInfo={setInfo} />
+                </div>
+              </>
+            )}
+
+            {markers.map((marker) => (
+              <MapMarker
+                key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                position={marker.position}
+                image={{
+                  src: '/img/marker.png',
+                  size: {
+                    width: 40,
+                    height: 40,
+                  },
+                }}
+                onClick={() => setInfo(marker)}
+                onMouseOver={() => setInfo(marker)}
+                onMouseOut={() => setInfo()}
+              />
+            ))}
+            {markers.map(
+              (marker) =>
+                info &&
+                info.content === marker.content && (
                   <CustomOverlayMap
+                    key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
                     zIndex={20}
                     position={marker.position}
                     yAnchor={1.5}
                   >
                     <div className="px-auto my-1 flex flex-col rounded border border-mint-em bg-white py-2 text-center">
                       <h3 className="mx-auto p-2">{marker.content}</h3>
-                      <button
-                        className="mx-auto content-center rounded border border-mint px-2 py-1 text-mint md:hidden"
-                        onClick={() => {
-                          addBookmarkPlace(
-                            marker.category_group_code,
-                            marker.content,
-                            marker.road_address_name,
-                            marker.address_name,
-                            marker.y,
-                            marker.x,
-                            setHasPlace,
-                          );
-                          getMyBookmark();
-
-                          setMarkers(
-                            myData.map((bookmark) => {
-                              return {
-                                position: {
-                                  lat: bookmark.lat,
-                                  lng: bookmark.lng,
-                                },
-                                content: bookmark.place_name,
-                                ...bookmark,
-                              };
-                            }),
-                          );
-                        }}
-                      >
-                        {hasPlace}
-                      </button>
+                      {!isMyBookmark && (
+                        <button
+                          className="mx-auto content-center rounded border border-mint px-2 py-1 text-mint md:hidden"
+                          onClick={() => {
+                            addBookmarkPlace(
+                              marker.category_group_code,
+                              marker.content,
+                              marker.road_address_name,
+                              marker.address_name,
+                              marker.y,
+                              marker.x,
+                              setHasPlace
+                            );
+                            getMyBookmark();
+                          }}
+                        >
+                          {hasPlace}
+                        </button>
+                      )}
                     </div>
                   </CustomOverlayMap>
-                )}
-              </>
-            ))}
+                )
+            )}
           </Map>
         </div>
       </div>
