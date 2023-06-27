@@ -1,7 +1,7 @@
 import haversine from 'haversine';
 
 const getNearPlaces = (data, position, radius) => {
-  return data.filter((place) => {
+  const withDistance = data.map((place) => {
     const start = {
       latitude: position.lat,
       longitude: position.lng,
@@ -13,8 +13,10 @@ const getNearPlaces = (data, position, radius) => {
 
     const distance = haversine(start, end, { unit: 'meter' });
 
-    return distance <= radius;
+    return { ...place, distance };
   });
+
+  return withDistance.filter((place) => place.distance <= radius);
 };
 
 export default getNearPlaces;

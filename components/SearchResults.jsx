@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import SearchedList from './SearchedList';
 
@@ -16,21 +18,17 @@ const SearchResults = ({ markers, setInfo, setIsListOpen }) => {
   return (
     <div className="divide w-full divide-y divide-mint">
       {currentMarkers.map((marker) => (
-        <div
-          key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-          className="h-4/5 w-full"
-        >
-          <SearchedList
-            code={marker.category_group_code}
-            roadAddress={marker.road_address_name}
-            address={marker.address_name}
-            name={marker.place_name}
-            lat={marker.y}
-            lng={marker.x}
-            onMouseOver={() => setInfo(marker)}
-            onMouseOut={() => setInfo()}
-          />
-        </div>
+        <SearchedList
+          key={`marker-${marker.place_name}-${marker.position.lat},${marker.position.lng}`}
+          code={marker.category_group_code}
+          roadAddress={marker.road_address_name}
+          address={marker.address_name}
+          name={marker.place_name}
+          lat={marker.y}
+          lng={marker.x}
+          onMouseOver={() => setInfo(marker)}
+          onMouseOut={() => setInfo()}
+        />
       ))}
 
       <div className="flex justify-between py-2">
@@ -41,7 +39,7 @@ const SearchResults = ({ markers, setInfo, setIsListOpen }) => {
 
             return (
               <button
-                key={`page-${pageNumber}`}
+                key={`page-${pageNumber}-${index}`}
                 onClick={() => handlePaginationClick(pageNumber)}
                 className={`mx-1 mr-2 rounded px-4 py-2 text-gray hover:bg-mint ${
                   currentPage === pageNumber ? 'bg-mint-em text-white' : ''

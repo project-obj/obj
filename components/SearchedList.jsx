@@ -53,7 +53,7 @@ const SearchedList = ({
               address,
               lat,
               lng,
-              setHasPlace,
+              setHasPlace
             )
           }
           className="mx-2 rounded-full border-2 border-mint bg-mint px-4 py-2 font-semibold text-white hover:bg-white hover:text-mint"
@@ -65,7 +65,7 @@ const SearchedList = ({
   );
 
   return (
-    <div>
+    <div key={`${name} - ${address} - ${lat} - ${lng}`}>
       {modalVisible && (
         <PlaceModal
           closeModal={closeModal}
