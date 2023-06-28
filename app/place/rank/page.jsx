@@ -6,6 +6,7 @@ import useCurrentUser from '@/hooks/useCurrentUser';
 
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import Pagination from 'react-js-pagination';
 
 import PlaceList from '@/components/PlaceList';
 import { useRouter } from 'next/navigation';
@@ -21,6 +22,9 @@ const page = () => {
   });
   const [markerLocation, setMarkerLocation] = useState();
   const [selectedPlace, setSelectedPlace] = useState('');
+
+  const [page, setPage] = useState(1);
+  const [items, setItems] = useState(7);
 
   useEffect(() => {
     axios
@@ -48,32 +52,51 @@ const page = () => {
     if (!userData) return router.push('/user/login');
   });
 
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
   return (
-    <div className="h-[90vh] w-screen">
-      <div className="mx-auto flex h-full items-start justify-around">
-        <div className=" mt-10 flex w-[300px] flex-col items-center justify-start">
-          {hotPlaces.map((place) => (
-            <PlaceList
-              key={place.place_name}
-              name={place.place_name}
-              address={place.address}
-              roadAddress={place.roadAddress}
-              lat={place.lat}
-              lng={place.lng}
-              cnt={place.cnt}
-              onClick={() => {
-                setMapCenter({ lat: place.lat, lng: place.lng });
-                setMarkerLocation({ lat: place.lat, lng: place.lng });
-                setSelectedPlace({
-                  name: place.place_name,
-                  address: place.roadAddress,
-                });
-              }}
-            />
-          ))}
+    <div className="h-[90vh] w-full overflow-x-hidden">
+      <div className="flex h-full w-full items-start">
+        <div className="mx-auto mt-10 flex w-11/12 flex-col items-center justify-start">
+          {hotPlaces
+            .slice(items * (page - 1), items * (page - 1) + items)
+            .map((place) => (
+              <PlaceList
+                key={place.place_name}
+                name={place.place_name}
+                address={place.address}
+                roadAddress={place.roadAddress}
+                lat={place.lat}
+                lng={place.lng}
+                cnt={place.cnt}
+                onClick={() => {
+                  setMapCenter({ lat: place.lat, lng: place.lng });
+                  setMarkerLocation({ lat: place.lat, lng: place.lng });
+                  setSelectedPlace({
+                    name: place.place_name,
+                    address: place.roadAddress,
+                  });
+                }}
+              />
+            ))}
+
+          {hotPlaces.length > 7 && (
+            <Pagination
+              activePage={page}
+              itemsCountPerPage={items}
+              totalItemsCount={hotPlaces.length}
+              pageRangeDisplayed={5}
+              onChange={handlePageChange}
+              innerClass="flex w-full justify-around"
+              activeClass="bg-mint/80"
+              itemClass="px-2 rounded-md"
+            ></Pagination>
+          )}
         </div>
 
-        <div className="hidden h-[90vh] w-full md:block">
+        <div className="mt-10 hidden h-[90vh] w-full md:block">
           <Map
             center={mapCenter}
             style={{ width: '100%', height: '100%' }}
