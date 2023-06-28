@@ -8,7 +8,6 @@ import Cookies from 'js-cookie';
 import Pagination from 'react-js-pagination';
 
 const page = ({ params }) => {
-  const [showingDatas, setShowingDatas] = useState([]);
   const [userDatas, setUserDatas] = useState([]);
 
   const [page, setPage] = useState(1);
@@ -25,10 +24,7 @@ const page = ({ params }) => {
         withCredentials: true,
       })
       .then((res) => res?.data?.Places || [])
-      .then((data) => {
-        setUserDatas([...data]);
-        setShowingDatas([...data]);
-      })
+      .then((data) => setUserDatas([...data]))
       .then(() => setIsLoading(false));
   }, []);
 
@@ -50,8 +46,8 @@ const page = ({ params }) => {
         <div className="flex justify-around">
           <div className="w-4/5 flex-col items-center justify-start rounded md:w-[65vw]">
             <h3 className="text-center font-bold">⭐️마이 북마크⭐️</h3>
-            {isLoading || !!showingDatas.length ? (
-              showingDatas
+            {isLoading || !!userDatas.length ? (
+              userDatas
                 .slice(items * (page - 1), items * (page - 1) + items)
                 .map((place) => (
                   <UserInfo
@@ -60,8 +56,8 @@ const page = ({ params }) => {
                     cnt={place.cnt}
                     name={place.place_name}
                     roadAddress={place.roadAddress}
-                    setShowingDatas={setShowingDatas}
-                    showingDatas={showingDatas}
+                    setUserDatas={setUserDatas}
+                    userDatas={userDatas}
                   />
                 ))
             ) : (
@@ -70,11 +66,11 @@ const page = ({ params }) => {
             {isLoading &&
               new Array(10).fill(<UserInfo isLoading={isLoading} />)}
 
-            {showingDatas.length > 10 && (
+            {userDatas.length > 10 && (
               <Pagination
                 activePage={page}
                 itemsCountPerPage={items}
-                totalItemsCount={showingDatas.length}
+                totalItemsCount={userDatas.length}
                 pageRangeDisplayed={5}
                 onChange={handlePageChange}
                 innerClass="flex w-full justify-around"
