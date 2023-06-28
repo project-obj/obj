@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import UserInfo from '@/components/userinfo';
 import Cookies from 'js-cookie';
+import Paging from '@/components/pageNation';
 
 const page = ({ params }) => {
   const [userDatas, setUserDatas] = useState([]);
@@ -19,25 +20,52 @@ const page = ({ params }) => {
       .then((res) => res?.data?.Places || [])
       .then((data) => setUserDatas([...data]));
   }, []);
-
+  console.log(userDatas);
   return (
     <div className="flex w-screen flex-col items-center justify-start">
       <div className="flex h-[15vh] items-center">
-        <button className="my-auto box-border block rounded-md border-none border-mint bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
+        <button className="my-auto rounded-md bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
           등록하기
         </button>
       </div>
 
       <div className="h-[75vh] w-screen">
-        <div className="flex h-[90%] justify-around">
-          <div className="w-[30vw] flex-col items-center justify-start rounded bg-white">
+        <div className="flex h-[80%] justify-around">
+          <div className="w-[45vw] flex-col items-center justify-start rounded ">
+            <h3 className="font-bold">내 장소</h3>
             {userDatas.map((place) => (
-              <UserInfo name={place.place_name} />
+              <UserInfo
+                name={place.place_name}
+                roadAddress={place.roadAddress}
+                id={place.id}
+              />
             ))}
+            <div className="flex justify-around ">
+              <Paging className="rounded-md bg-mint px-3 py-1" />
+            </div>
           </div>
-          <div className="w-[45vw] flex-col items-center justify-start rounded bg-white">
-            <h3 className="font-bold">태그</h3>
-            <section>dsds</section>
+          <div className="w-[30vw] items-center justify-start rounded bg-white">
+            <div className="m-3 grid grid-cols-10 justify-around gap-4 text-center">
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+            </div>
+            <div className="m-3 grid grid-cols-10 justify-around gap-4 text-center">
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+            </div>
+            <div className="m-3 grid grid-cols-10 justify-around gap-4 text-center">
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+              <div className="col-span-2 rounded-md bg-mint">태그</div>
+            </div>
           </div>
         </div>
       </div>
