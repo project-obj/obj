@@ -74,7 +74,7 @@ const UserInfo = ({
         )}
       </div>
       {editModalVisible && (
-        <EditModal id={id} name={name} closeModal={closeEditModal} />
+        <EditModal id={id} name={name} cnt={cnt} closeModal={closeEditModal} />
       )}
       {deleteModalVisible && (
         <DeleteModal

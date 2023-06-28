@@ -74,8 +74,8 @@ const page = ({ params }) => {
                 pageRangeDisplayed={5}
                 onChange={handlePageChange}
                 innerClass="flex w-full justify-around"
-                activeClass="bg-mint/80"
-                itemClass="px-2 rounded-md"
+                activeClass="bg-mint/60 px-2 text-white"
+                itemClass="px-2 rounded-md border border-gray/60"
               ></Pagination>
             )}
           </div>

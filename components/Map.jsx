@@ -163,7 +163,7 @@ const KakaoMap = () => {
   };
 
   useEffect(() => {
-    if (!userData && !isLoading) router.push('/user/login');
+    if (!isLoading && !userData) return router.push('/user/login');
   }, []);
 
   return (

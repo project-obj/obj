@@ -39,6 +39,7 @@ const DeleteModal = ({ id, name, closeModal, userDatas, setUserDatas }) => {
       data: {
         place_id: id,
       },
+      withCredentials: true,
     })
       .then((res) => {
         if (res.data.success) {

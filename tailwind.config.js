@@ -9,11 +9,12 @@ module.exports = {
     colors: {
       gray: '#555555',
       white: '#ffffff',
-      back: '#F5EFE7',
+      back: '#fef9f6',
       beige: '#D8C4B6',
       light: '#9596A2',
       mint: '#27E1C1',
       'mint-em': '#0EA293',
+      pink: '#d058a8',
       warning: '#f87171',
     },
     screens: {

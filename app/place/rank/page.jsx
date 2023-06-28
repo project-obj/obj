@@ -45,7 +45,7 @@ const page = () => {
   }, []);
 
   useEffect(() => {
-    if (!userData) return router.push('/user/login');
+    if (!isLoading && !userData) return router.push('/user/login');
   });
 
   return (
