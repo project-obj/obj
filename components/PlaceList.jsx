@@ -12,11 +12,7 @@ const PlaceList = ({ name, address, roadAddress, lat, lng, cnt, onClick }) => {
           <h2 className="text-[20px] text-mint-em">{name}</h2>
           <section className="flex w-full items-center justify-between">
             <div className="flex flex-col">
-              <p>
-                {roadAddress.length > 10
-                  ? roadAddress.slice(0, 10) + '...'
-                  : roadAddress}
-              </p>
+              <p>{roadAddress}</p>
             </div>
             <div className="flex items-center">
               <Image
