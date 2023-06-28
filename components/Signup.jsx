@@ -4,6 +4,8 @@ import Link from 'next/link';
 import UserFormWrapper from './UserFormWrapper';
 import Input from '@/components/Input';
 import Form from './Form';
+import CheckSign from './svg/CheckSign';
+
 import { useRouter } from 'next/navigation';
 
 import axios from 'axios';
@@ -31,7 +33,7 @@ const SignUp = () => {
             loginid: idInput,
             password: pwInput,
             email: emailInput,
-          },
+          }
         );
 
         if (res.status === 200) {
@@ -41,7 +43,7 @@ const SignUp = () => {
         console.log(error);
       }
     },
-    [nameInput, idInput, pwInput],
+    [nameInput, idInput, pwInput]
   );
 
   useEffect(() => {
@@ -73,12 +75,17 @@ const SignUp = () => {
           value={emailInput}
           onChange={setEmailInput}
         />
-        <Input
-          type="text"
-          placeholder="ID를 입력해주세요."
-          value={idInput}
-          onChange={setIdInput}
-        />
+        <div className="flex w-full justify-start">
+          <Input
+            type="text"
+            placeholder="ID를 입력해주세요."
+            value={idInput}
+            onChange={setIdInput}
+          />
+          <div className="flex-none">
+            <CheckSign />
+          </div>
+        </div>
         <Input
           type="password"
           placeholder="비밀번호를 입력해주세요."
@@ -88,13 +95,13 @@ const SignUp = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="inline-block rounded-full border-2 border-mint bg-mint px-8 py-2 font-semibold text-white hover:bg-white hover:text-mint"
+            className="inline-block rounded-full border-2 border-mint bg-mint px-6 py-2 font-semibold text-white hover:bg-white hover:text-mint"
           >
             회원가입
           </button>
           <Link
             href="/user/signup"
-            className="mx-1 inline-block rounded-full border-2 border-mint px-8 py-2 font-semibold hover:bg-white hover:text-mint md:hidden"
+            className="mx-1 inline-block rounded-full border-2 border-mint px-6 py-2 font-semibold hover:bg-white hover:text-mint md:hidden"
           >
             로그인
           </Link>

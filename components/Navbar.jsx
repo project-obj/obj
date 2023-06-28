@@ -7,10 +7,12 @@ import XButton from './svg/XButton';
 import Script from 'next/script';
 import Cookies from 'js-cookie';
 import useCurrentUser from '@/hooks/useCurrentUser';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const { userData, mutate } = useCurrentUser();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
 
   const handleMouseEnter = () => {
     setDropdownOpen(true);
@@ -27,6 +29,7 @@ const Navbar = () => {
     Cookies.remove('userid');
 
     mutate();
+    router.push('/login');
   };
 
   return (

@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
+
 import UserInfo from '@/components/userinfo';
 import Cookies from 'js-cookie';
 import Paging from '@/components/pageNation';
@@ -20,13 +22,17 @@ const page = ({ params }) => {
       .then((res) => res?.data?.Places || [])
       .then((data) => setUserDatas([...data]));
   }, []);
+
   console.log(userDatas);
+
   return (
     <div className="flex w-screen flex-col items-center justify-start">
       <div className="flex h-[15vh] items-center">
-        <button className="my-auto rounded-md bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
-          등록하기
-        </button>
+        <Link href={'/place'}>
+          <button className="my-auto box-border block rounded-md border-none border-mint bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
+            등록하러 가기!
+          </button>
+        </Link>
       </div>
 
       <div className="h-[75vh] w-screen">
@@ -35,9 +41,8 @@ const page = ({ params }) => {
             <h3 className="font-bold">내 장소</h3>
             {userDatas.map((place) => (
               <UserInfo
+                key={`${place.id}: ${place.place_name}`}
                 name={place.place_name}
-                roadAddress={place.roadAddress}
-                id={place.id}
               />
             ))}
             <div className="flex justify-around ">

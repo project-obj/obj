@@ -6,6 +6,7 @@ import Input from '@/components/Input';
 import IdCard from '@/components/svg/IdCard';
 import Lock from '@/components/svg/Lock';
 import Form from './Form';
+
 import { useRouter } from 'next/navigation';
 
 import axios from 'axios';
@@ -16,6 +17,7 @@ import useCurrentUser from '@/hooks/useCurrentUser';
 
 const Login = () => {
   const router = useRouter();
+  const [loginError, setLoginError] = useState('');
   const [idInput, setIdInput] = useInput('');
   const [pwInput, setPwInput] = useInput('');
 
@@ -24,26 +26,50 @@ const Login = () => {
   const handleLoginSubmit = useCallback(
     (e) => {
       e.preventDefault();
+      setLoginError('');
+
+      if (!idInput.trim().length) {
+        if (!pwInput.trim().length) {
+          console.log('No id pw');
+          setLoginError('ID와 비밀번호를 입력해주세요!');
+          return;
+        }
+        console.log('noid');
+        setLoginError('ID를 입력해주세요!');
+        return;
+      }
+
+      if (!pwInput.trim().length) {
+        setLoginError('비밀번호를 입력해주세요!');
+        return;
+      }
 
       axios
         .post(`${process.env.NEXT_PUBLIC_SERVER}/user/login`, {
           userid: idInput,
           password: pwInput,
         })
-        .then((res) => {
-          Cookies.set('token', res.data.token, { expires: 1 });
-          Cookies.set('name', res.data.name, { expires: 1 });
-          Cookies.set('userid', idInput, { expires: 1 });
-          axios.defaults.headers.common['token'] = res.data.token;
-          router.push('/');
-          mutate();
+        .then((response) => {
+          if (response.status == 200) {
+            setLoginError('');
+            const token = response.data.token;
+            Cookies.set('token', token, { expires: 1 });
+            Cookies.set('name', response.data.name, { expires: 1 });
+            Cookies.set('userid', idInput, { expires: 1 });
+            axios.defaults.headers.common['token'] = response.data.token;
+            mutate();
+            router.push('/');
+            return;
+          }
+          setLoginError('ID와 비밀번호를 확인해주세요.');
+          return;
         })
-        .catch((error) => {
-          console.dir(error);
-          setLogInError(error.response?.status === 401);
+        .catch(() => {
+          setLoginError('잠시 후에 다시 시도해주세요.');
+          return;
         });
     },
-    [idInput, pwInput, mutate],
+    [idInput, pwInput, mutate]
   );
 
   useEffect(() => {
@@ -73,16 +99,17 @@ const Login = () => {
           value={pwInput}
           onChange={setPwInput}
         />
+        <p className="my-2 font-extrabold text-warning">{loginError}</p>
         <div className="flex justify-center">
           <button
             type="submit"
-            className="inline-block rounded-full border-2 border-mint bg-mint px-8 py-2 font-semibold text-white hover:bg-white hover:text-mint"
+            className="inline-block rounded-full border-2 border-mint bg-mint px-6 py-2 font-semibold text-white hover:bg-white hover:text-mint"
           >
             로그인
           </button>
           <Link
             href="/user/signup"
-            className="mx-1 inline-block rounded-full border-2 border-mint px-8 py-2 font-semibold hover:bg-white hover:text-mint md:hidden"
+            className="mx-1 inline-block rounded-full border-2 border-mint px-6 py-2 font-semibold hover:bg-white hover:text-mint md:hidden"
           >
             회원가입
           </Link>

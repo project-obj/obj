@@ -14,6 +14,7 @@ module.exports = {
       light: '#9596A2',
       mint: '#27E1C1',
       'mint-em': '#0EA293',
+      warning: '#f87171',
     },
     screens: {
       mob: '375px',

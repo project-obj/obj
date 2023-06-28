@@ -2,11 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 
+import useCurrentUser from '@/hooks/useCurrentUser';
+
 import axios from 'axios';
 
 import PlaceList from '@/components/PlaceList';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
+  const { userData, isLoading } = useCurrentUser();
+  const router = useRouter();
+
   const [hotPlaces, setHotPlaces] = useState([]);
   const [mapCenter, setMapCenter] = useState({
     lat: 37.555677404758484,
@@ -19,8 +25,18 @@ const page = () => {
     axios
       .get(`${process.env.NEXT_PUBLIC_SERVER}/place/rank`)
       .then((res) => res.data)
-      .then((data) => setHotPlaces(data));
+      .then((data) => setHotPlaces(data))
+      .catch((err) => {
+        console.error(err);
+        if (!userData) return router.push('/user/login');
+
+        return router.push('/');
+      });
   }, []);
+
+  useEffect(() => {
+    if (!userData) return router.push('/user/login');
+  });
 
   return (
     <div className="h-[90vh] w-screen">
