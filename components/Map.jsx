@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import getNearPlaces from '@/utils/getNearPlaces';
 
-import seoulSubwayStations from '@/utils/seoulSubwayStations';
+import Stations from '@/utils/Stations';
 import { chosungIncludes, hangulIncludes } from '@toss/hangul';
 import PlaceModal from './modal/placeModal';
 
@@ -110,13 +110,9 @@ const KakaoMap = () => {
   const handleInput = (event) => {
     setStationInput(event.target.value);
 
-    const filteredStations = seoulSubwayStations.filter((station) => {
-      return (
-        hangulIncludes(station.name, stationInput) ||
-        chosungIncludes(station.name, stationInput)
-      );
+    const filteredStations = Stations.filter((station) => {
+      return hangulIncludes(station.name, stationInput);
     });
-    if (!stationInput.trim().length) return;
 
     const recommendationList = filteredStations.map((station) => station);
     setRecommendations(recommendationList);
@@ -225,35 +221,47 @@ const KakaoMap = () => {
                     />
                     <div className="devide flex flex-col divide-y">
                       {!!stationInput &&
+                        !!recommendations.length &&
                         recommendations
                           .slice(0, 10)
                           .map((recommendation, index) => (
                             <button
-                              key={recommendation.name}
+                              key={
+                                recommendation.name +
+                                recommendation.lane +
+                                recommendation.lat +
+                                recommendation.lng
+                              }
                               className="py-2"
                               onClick={() => {
-                                const deepCopyRecommendation = JSON.parse(
-                                  JSON.stringify(recommendation)
-                                );
-                                setChosenStation(deepCopyRecommendation);
+                                setChosenStation(recommendation);
 
                                 setNearPlaces(
                                   getNearPlaces(
                                     markers,
-                                    deepCopyRecommendation.position,
+                                    recommendation.position,
                                     1500
                                   )
                                 );
+                                setStationInput('');
+                                setRecommendations([]);
 
                                 const moveLatLon = new kakao.maps.LatLng(
-                                  deepCopyRecommendation.position.lat,
-                                  deepCopyRecommendation.position.lng
+                                  recommendation.position.lat,
+                                  recommendation.position.lng
                                 );
                                 mapRef.current.setLevel(4);
                                 mapRef.current.setCenter(moveLatLon);
                               }}
                             >
-                              {recommendation.name}
+                              <div className="flex justify-start">
+                                <h3 className="ml-3 w-1/3 font-bold">
+                                  {recommendation.name}
+                                </h3>
+                                <p className="text-mint-em">
+                                  {recommendation.lane}
+                                </p>
+                              </div>
                             </button>
                           ))}
                     </div>
