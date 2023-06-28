@@ -5,6 +5,7 @@ import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import useCurrentUser from '@/hooks/useCurrentUser';
 
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 import PlaceList from '@/components/PlaceList';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,16 @@ const page = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.NEXT_PUBLIC_SERVER}/place/rank`)
+      .get(`${process.env.NEXT_PUBLIC_SERVER}/place/rank`, {
+        headers: {
+          'Content-Type': 'application/json',
+          token: `${Cookies.get('token')}`,
+        },
+        params: {
+          userid: userData || Cookies.get('userid'),
+        },
+        withCredentials: true,
+      })
       .then((res) => res.data)
       .then((data) => setHotPlaces(data))
       .catch((err) => {

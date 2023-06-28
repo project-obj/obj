@@ -13,6 +13,7 @@
     "sourceType": "module",
     "ecmaVersion": 2020
   },
+  "ignorePatterns": ["dist", "node_modules", ".next"],
   "rules": {
     "no-unused-vars": [1, { "args": "after-used", "argsIgnorePattern": "^_" }],
     "react-hooks/exhaustive-deps": [

@@ -14,8 +14,8 @@ const SearchedList = ({
   onMouseOver,
   onMouseOut,
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
   const [hasPlace, setHasPlace] = useState('등록하기!');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const showModal = () => {
     setHasPlace('등록하기!');

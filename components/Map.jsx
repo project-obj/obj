@@ -15,7 +15,7 @@ import Cookies from 'js-cookie';
 import getNearPlaces from '@/utils/getNearPlaces';
 
 import Stations from '@/utils/Stations';
-import { chosungIncludes, hangulIncludes } from '@toss/hangul';
+import { hangulIncludes } from '@toss/hangul';
 import PlaceModal from './modal/placeModal';
 
 const KakaoMap = () => {
