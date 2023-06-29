@@ -35,7 +35,6 @@ const page = ({ params }) => {
   const checkedItemHandler = (value) => {
     setCheckedTag(value);
   };
-  console.log(checkedTag);
 
   useEffect(() => {
     axios
@@ -48,7 +47,6 @@ const page = ({ params }) => {
       })
       .then((res) => res?.data || [])
       .then((data) => {
-        console.log(data);
         return data.map((place) => ({
           ...place,
           tag: !!place.tags ? JSON.parse(place.tags) : [],

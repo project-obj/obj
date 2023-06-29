@@ -3,7 +3,6 @@
 import React from 'react';
 
 const InfoModal = ({ data, closeModal }) => {
-  console.log(data.tag, typeof data.tag);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray/80 bg-opacity-50" // z-index 값을 z-50으로 변경
