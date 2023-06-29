@@ -1,11 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import Pagination from 'react-js-pagination';
 import Link from 'next/link';
 
 import UserInfo from '@/components/userinfo';
-import Cookies from 'js-cookie';
-import Pagination from 'react-js-pagination';
+import MobileTagButton from '@/components/MobileTagButton';
 
 const checkBoxList = [
   '데이트',
@@ -18,34 +19,23 @@ const checkBoxList = [
   '여행',
   '건강',
   '레저',
+  '힐링',
+  '카페',
 ];
 
-const wishCheckList = ['또 가고 싶어요!', '가고 싶어요!', '좋았어요!'];
-
 const page = ({ params }) => {
+  const items = 10;
   const [userDatas, setUserDatas] = useState([]);
 
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState(10);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [checkedList, setCheckedList] = useState([]);
-
-  const [wish, setWish] = useState('');
+  const [checkedTag, setCheckedTag] = useState('');
 
   const checkedItemHandler = (value) => {
-    if (checkedList.includes(value)) {
-      setCheckedList(checkedList.filter((item) => item !== value));
-
-      return;
-    }
-    setCheckedList((prev) => [...prev, value]);
-    return;
+    setCheckedTag(value);
   };
-
-  const checkHandler = (value) => {
-    checkedItemHandler(value);
-  };
+  console.log(checkedTag);
 
   useEffect(() => {
     axios
@@ -57,8 +47,17 @@ const page = ({ params }) => {
         withCredentials: true,
       })
       .then((res) => res?.data || [])
-      .then((data) => setUserDatas([...data]))
-      .then(() => setIsLoading(false));
+      .then((data) => {
+        console.log(data);
+        return data.map((place) => ({
+          ...place,
+          tag: !!place.tags ? JSON.parse(place.tags) : [],
+        }));
+      })
+      .then((data) => {
+        setUserDatas(data);
+        setIsLoading(false);
+      });
   }, []);
 
   const handlePageChange = (page) => {
@@ -67,12 +66,29 @@ const page = ({ params }) => {
 
   return (
     <div className="flex w-screen flex-col items-center justify-start">
-      <div className="flex h-[10vh] items-center">
-        <Link href={'/place'}>
-          <button className="my-auto box-border block rounded-md border-none border-mint bg-mint px-20 py-4 font-bold text-white hover:bg-mint/80">
-            등록하러 가기!
-          </button>
-        </Link>
+      <div className="h-[10vh] w-screen">
+        <div className="hidden h-full w-full items-center justify-center md:flex">
+          <Link href={'/place'}>
+            <button className="mx-4 my-auto box-border block rounded-md border-none bg-mint px-6 py-2 font-bold text-white hover:bg-mint/80">
+              등록하러 가기!
+            </button>
+          </Link>
+          <Link href={'/place/rank'}>
+            <button className="mx-4 my-auto box-border block rounded-md border-none bg-pink/40 px-6 py-2 font-bold text-white hover:bg-pink/60">
+              핫플레이스는?
+            </button>
+          </Link>
+        </div>
+        <div className="flex h-full w-full flex-wrap items-center justify-center md:hidden">
+          {checkBoxList.map((item, idx) => (
+            <MobileTagButton
+              key={idx}
+              tag={item}
+              checkedTag={checkedTag}
+              setCheckedTag={setCheckedTag}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="h-[75vh] w-screen">
@@ -81,12 +97,16 @@ const page = ({ params }) => {
             <h3 className="text-center font-bold">⭐️마이 북마크⭐️</h3>
             {isLoading || !!userDatas.length ? (
               userDatas
+                .filter((place) => {
+                  if (checkedTag === '') return true;
+                  return place.tag.includes(checkedTag);
+                })
                 .slice(items * (page - 1), items * (page - 1) + items)
                 .map((place) => (
                   <UserInfo
-                    key={`${place.id}: ${place.place_name}`}
+                    key={`${place.palceId}: ${place.place_name}`}
                     data={place}
-                    id={place.id}
+                    id={place.placeId}
                     cnt={place.cnt}
                     name={place.place_name}
                     roadAddress={place.roadAddress}
@@ -118,39 +138,36 @@ const page = ({ params }) => {
             <h3 className="mb-2 rounded bg-mint/70 text-center font-semibold text-white shadow-lg">
               📌태그
             </h3>
-            <div className="min-w-[150px] px-4 py-3 font-bold">
-              {wishCheckList.map((item, idx) => (
-                <div className="radio" key={idx + item}>
-                  <div className="relative mb-1 h-8">
-                    <input
-                      type="radio"
-                      id={item}
-                      value={item}
-                      name="wish"
-                      className={`peer h-full w-full cursor-pointer appearance-none rounded-lg bg-light/80 shadow-lg transition-all duration-200 checked:bg-pink hover:bg-pink hover:text-white`}
-                      onClick={() => {
-                        setWish(item);
-                      }}
-                    ></input>
-                    <label
-                      htmlFor={item}
-                      className={`absolute left-3 top-[50%] -translate-y-[50%] select-none text-white transition-all duration-200`}
-                    >
-                      {item}
-                    </label>
-                  </div>
-                </div>
-              ))}
-            </div>
             <div className="min-w-[150px] rounded px-4 py-3 font-bold">
+              <div className="checkbox">
+                <div className="relative mb-1 h-8">
+                  <input
+                    type="radio"
+                    name="tag"
+                    id="show-all"
+                    defaultChecked
+                    className="peer h-full w-full cursor-pointer appearance-none rounded-lg bg-pink/60 shadow-lg transition-all duration-200 hover:bg-pink/70"
+                    onChange={(e) => {
+                      setCheckedTag('');
+                    }}
+                  ></input>
+                  <label
+                    htmlFor="show-all"
+                    className="absolute left-3 top-[50%] -translate-y-[50%] select-none text-gray/90 transition-all duration-200 hover:text-white"
+                  >
+                    전체보기
+                  </label>
+                </div>
+              </div>
               {checkBoxList.map((item, idx) => (
                 <div className="checkbox" key={idx}>
                   <div className="relative mb-1 h-8">
                     <input
-                      type="checkbox"
+                      type="radio"
+                      name="tag"
                       id={item}
-                      className="peer h-full w-full cursor-pointer appearance-none rounded-lg bg-gray/10 shadow-lg transition-all duration-200 checked:bg-mint hover:bg-gray/20 checked:hover:bg-mint/30"
-                      onChange={() => checkHandler(item)}
+                      className="peer h-full w-full cursor-pointer appearance-none rounded-lg bg-gray/10 shadow-lg transition-all duration-200 checked:bg-mint hover:bg-gray/20 checked:hover:bg-mint/50"
+                      onChange={() => checkedItemHandler(item)}
                     ></input>
                     <label
                       htmlFor={item}

@@ -57,6 +57,10 @@ const Login = () => {
             Cookies.set('name', response.data.name, { expires: 1 });
             Cookies.set('userid', idInput, { expires: 1 });
             axios.defaults.headers.common['token'] = response.data.token;
+            axios.defaults.withCredentials = true; // credential:true 추가
+            axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'; // access-control-allow-origin 추가
+            axios.defaults.headers.common['SameSite'] = 'none'; // samesite=none 추가
+            axios.defaults.headers.common['secure'] = true; // secure=true 추가
             mutate();
             router.push('/');
             return;

@@ -3,7 +3,7 @@
 import React from 'react';
 
 const InfoModal = ({ data, closeModal }) => {
-  console.log(data);
+  console.log(data.tag, typeof data.tag);
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray/80 bg-opacity-50" // z-index 값을 z-50으로 변경
@@ -23,8 +23,8 @@ const InfoModal = ({ data, closeModal }) => {
           <section className="w-full">
             <div className="flex w-full justify-around md:justify-center">
               <div className="min-w-[150px] px-4 py-3 font-bold">
-                {data.tag.split(',').map((item, idx) => (
-                  <div className="checkbox" key={idx}>
+                {data.tag.map((item, idx) => (
+                  <div className={`${item ? '' : 'hidden'} checkbox`} key={idx}>
                     <div className="relative mb-1 h-8">
                       <input
                         type="checkbox"
@@ -49,7 +49,7 @@ const InfoModal = ({ data, closeModal }) => {
                     <input
                       type="checkbox"
                       id="visit"
-                      value={data.visit}
+                      value={data.visits}
                       name="wish"
                       checked
                       readOnly
@@ -59,7 +59,7 @@ const InfoModal = ({ data, closeModal }) => {
                       htmlFor="visit"
                       className={`absolute left-3 top-[50%] -translate-y-[50%] select-none text-white transition-all duration-200`}
                     >
-                      {data.visit}
+                      {data.visits}
                     </label>
                   </div>
                 </div>

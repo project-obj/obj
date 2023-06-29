@@ -8,7 +8,7 @@ const UserFormWrapper = ({ children, message, question, type }) => {
       <div className="mx-auto w-3/4 max-w-4xl rounded-2xl bg-white md:flex">
         <div className="p-5 md:w-3/5">
           <SmallLogo />
-          <div className="py-10">
+          <div className="py-5">
             <h2 className="text-[24px] font-bold text-mint-em">{message}</h2>
           </div>
           {children}

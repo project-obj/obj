@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Hamburger from './svg/Hamburger';
@@ -8,6 +8,8 @@ import Script from 'next/script';
 import Cookies from 'js-cookie';
 import useCurrentUser from '@/hooks/useCurrentUser';
 import { useRouter } from 'next/navigation';
+
+import axios from 'axios';
 
 const Navbar = () => {
   const { userData, mutate } = useCurrentUser();
@@ -31,6 +33,16 @@ const Navbar = () => {
     mutate();
     router.push('/login');
   };
+
+  useEffect(() => {
+    if (userData) {
+      axios.defaults.withCredentials = true; // credential:true 추가
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'; // access-control-allow-origin 추가
+      axios.defaults.headers.common['SameSite'] = 'none'; // samesite=none 추가
+      axios.defaults.headers.common['secure'] = true; // secure=true 추가
+      return;
+    }
+  }, [userData]);
 
   return (
     <>

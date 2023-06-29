@@ -50,21 +50,22 @@ const UserInfo = ({
   return (
     <>
       <div
-        className={`my-2 flex h-[5vh] w-full items-center justify-between overflow-hidden rounded-md bg-white shadow md:justify-between lg:justify-start`}
+        className={`my-2 flex min-h-[5vh] w-full items-center justify-between overflow-hidden rounded-md bg-white shadow md:justify-between lg:justify-start`}
       >
         {name && (
           <>
             <div
               onClick={showInfoModal}
-              className="mx-4 w-1/2 cursor-pointer font-semibold text-mint-em md:w-1/4"
+              className="mx-4 basis-1/3 cursor-pointer text-[14px] font-semibold text-mint-em md:w-1/4"
             >
               {name}
             </div>
-            <div className="hidden w-1/3 flex-grow text-gray/80 lg:inline-block">
+            <div className="hidden w-1/3 text-[12px] text-gray/80 lg:inline-block lg:flex-grow">
               {roadAddress}
             </div>
+            <div className="w-1/4">{data.visits}</div>
             {name !== '북마크를 등록해주세요!' && (
-              <div className="flex w-1/6 items-center justify-center">
+              <div className="flex basis-1/4 items-center justify-center md:w-1/6">
                 <button
                   onClick={showEditModal}
                   className="mx-2 h-full hover:animate-bounce"
@@ -89,12 +90,21 @@ const UserInfo = ({
         )}
       </div>
       {editModalVisible && (
-        <EditModal id={id} name={name} cnt={cnt} closeModal={closeEditModal} />
+        <EditModal
+          id={id}
+          data={data}
+          name={name}
+          cnt={cnt}
+          userDatas={userDatas}
+          setUserDatas={setUserDatas}
+          closeModal={closeEditModal}
+        />
       )}
       {deleteModalVisible && (
         <DeleteModal
           userDatas={userDatas}
           setUserDatas={setUserDatas}
+          data={data}
           id={id}
           name={name}
           closeModal={closeDeleteModal}

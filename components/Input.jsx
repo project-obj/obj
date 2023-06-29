@@ -4,10 +4,11 @@ import React from 'react';
 const Input = React.memo(
   ({ svg, name, placeholder, type, value, onChange }) => {
     return (
-      <div className="mb-4 flex">
+      <div className="my-2 flex">
         {svg}
         <input
           placeholder={placeholder}
+          spellCheck={false}
           name={name}
           type={type}
           value={value}

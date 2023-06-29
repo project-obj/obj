@@ -214,6 +214,7 @@ const KakaoMap = () => {
                   <div className="mx-auto flex flex-col">
                     <input
                       placeholder="지하철 역 입력!"
+                      spellCheck={false}
                       type="text"
                       value={stationInput}
                       onChange={(e) => handleInput(e)}
@@ -275,6 +276,7 @@ const KakaoMap = () => {
                   >
                     <input
                       type="text"
+                      spellCheck={false}
                       value={keyword}
                       onChange={onChangeKeyword}
                       id="keyword"

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -15,15 +15,32 @@ const checkBoxList = [
   '여행',
   '건강',
   '레저',
+  '힐링',
+  '카페',
 ];
 
 const wishCheckList = ['또 가고 싶어요!', '가고 싶어요!', '좋았어요!'];
 
-const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
-  const [checkedList, setCheckedList] = useState([]);
+const EditModal = ({
+  id,
+  name,
+  closeModal,
+  data,
+  cnt,
+  userDatas,
+  setUserDatas,
+}) => {
+  const [checkedList, setCheckedList] = useState(data.tag);
 
-  const [wish, setWish] = useState('');
+  const [wish, setWish] = useState(data.visits);
   const [message, setMessage] = useState('');
+
+  const validateCheckedTags = (item) => {
+    if (checkedList.includes(item)) {
+      return true;
+    }
+    return false;
+  };
 
   const checkedItemHandler = (value) => {
     if (checkedList.includes(value)) {
@@ -48,14 +65,6 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
   );
 
   const editMyBookmark = async () => {
-    let tag = '';
-    if (checkedList.length === 1) {
-      tag = checkedList[0];
-    }
-    if (checkedList.length > 1) {
-      tag = checkedList.join(',');
-    }
-
     return await axios({
       method: 'PUT',
       headers: {
@@ -65,19 +74,18 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
       url: `${process.env.NEXT_PUBLIC_SERVER}/user/${Cookies.get('userid')}`,
       data: {
         placeName: name,
-        tag: tag,
-        visit: !!wish ? wish : '가고 싶어요!',
+        tag: JSON.stringify(checkedList),
+        visit: wish,
       },
       withCredentials: true,
     })
       .then((res) => {
         if (res.data.success) {
-          setMessage('');
-          const newData = userDatas.filter((data) => id === userDatas.id);
-          const newArray = userDatas.filter((data) => id !== userDatas.id);
+          const newData = userDatas.filter((data) => id === data.placeId);
+          const newArray = userDatas.filter((data) => id !== data.placeId);
 
-          newData[0].tag = tag;
-          newData[0].visit = !!wish ? wish : '가고 싶어요!';
+          newData[0].tags = checkedList;
+          newData[0].visit = wish;
 
           setUserDatas([...newData, ...newArray]);
           closeModal();
@@ -119,6 +127,7 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
                         <input
                           type="checkbox"
                           id={item}
+                          checked={validateCheckedTags(item)}
                           className="peer h-full w-full cursor-pointer appearance-none rounded-lg bg-gray/10 transition-all duration-200 checked:bg-mint hover:bg-gray/20 checked:hover:bg-mint/30"
                           onChange={() => checkHandler(item)}
                         ></input>
@@ -141,11 +150,9 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
                           id={item}
                           value={item}
                           name="wish"
-                          defaultChecked={
-                            item === '가고 싶어요!' ? true : false
-                          }
+                          checked={item === wish ? true : false}
                           className={`peer h-full w-full cursor-pointer appearance-none rounded-lg bg-light/80 transition-all duration-200 checked:bg-pink hover:bg-pink hover:text-white`}
-                          onClick={() => {
+                          onChange={() => {
                             setWish(item);
                           }}
                         ></input>

@@ -1,9 +1,17 @@
+'use client';
 import React from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 
-const DeleteModal = ({ id, name, closeModal, userDatas, setUserDatas }) => {
+const DeleteModal = ({
+  id,
+  name,
+  data,
+  closeModal,
+  userDatas,
+  setUserDatas,
+}) => {
   const success = () =>
     toast.success({ name } + '삭제 성공!', {
       position: 'top-center',
@@ -27,6 +35,7 @@ const DeleteModal = ({ id, name, closeModal, userDatas, setUserDatas }) => {
       progress: undefined,
       theme: 'light',
     });
+  console.log(data);
 
   const deleteMyBookmark = () =>
     axios({
@@ -37,13 +46,17 @@ const DeleteModal = ({ id, name, closeModal, userDatas, setUserDatas }) => {
       },
       url: `${process.env.NEXT_PUBLIC_SERVER}/place/delete`,
       data: {
-        place_id: id,
+        place_id: data.placeId,
       },
       withCredentials: true,
+      crossDomain: true,
+      cookie: {
+        sameSite: 'none',
+      },
     })
       .then((res) => {
         if (res.data.success) {
-          const afterDeleted = userDatas.filter((data) => data.id !== id);
+          const afterDeleted = userDatas.filter((data) => data.placeId !== id);
           setUserDatas(afterDeleted);
           success();
           return;
