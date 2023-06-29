@@ -31,7 +31,7 @@ const SearchResults = ({ markers, setInfo, setIsListOpen }) => {
         />
       ))}
 
-      <div className="flex w-full justify-between">
+      <div className="flex w-full items-center justify-between">
         {Array(Math.ceil(markers.length / markersPerPage))
           .fill('')
           .map((_, index) => {
@@ -41,7 +41,7 @@ const SearchResults = ({ markers, setInfo, setIsListOpen }) => {
               <button
                 key={`page-${pageNumber}-${index}`}
                 onClick={() => handlePaginationClick(pageNumber)}
-                className={`rounded px-4 text-gray hover:bg-mint ${
+                className={`basis-1/4 rounded text-gray hover:bg-mint ${
                   currentPage === pageNumber ? 'bg-mint-em text-white' : ''
                 }`}
               >
@@ -52,7 +52,7 @@ const SearchResults = ({ markers, setInfo, setIsListOpen }) => {
         {!!markers.length && (
           <button
             onClick={() => setIsListOpen(false)}
-            className="rounded border border-gray px-4 py-2 text-gray hover:border-mint/80 "
+            className="basis-1/4 rounded border border-gray text-gray hover:border-mint/80 "
           >
             X
           </button>

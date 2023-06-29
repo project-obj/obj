@@ -88,6 +88,11 @@ const page = ({ params }) => {
               setCheckedTag={setCheckedTag}
             />
           ))}
+          <MobileTagButton
+            tag={'All'}
+            checkedTag={checkedTag}
+            setCheckedTag={() => setCheckedTag('')}
+          />
         </div>
       </div>
 

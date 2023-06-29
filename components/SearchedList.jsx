@@ -45,8 +45,8 @@ const SearchedList = ({
       )}
       <div onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
         <button onClick={showModal} className="w-full hover:underline">
-          <h4 className="my-0 py-0">{name}</h4>
-          <p className="my-0 py-0">{address}</p>
+          <h4 className="my-0 py-0 text-[14px]">{name}</h4>
+          <p className="my-0 py-0 text-[12px]">{address}</p>
         </button>
       </div>
     </div>
