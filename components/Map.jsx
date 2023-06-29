@@ -35,8 +35,8 @@ const KakaoMap = () => {
   const [isMyBookmark, setIsMyBookmark] = useState(false);
   const [nearPlaces, setNearPlaces] = useState([]);
 
-  const getMyBookmark = () =>
-    axios
+  const getMyBookmark = async () =>
+    await axios
       .get(`${process.env.NEXT_PUBLIC_SERVER}/place`, {
         headers: {
           'Content-Type': 'application/json',
@@ -49,6 +49,7 @@ const KakaoMap = () => {
       })
       .then((res) => res?.data?.Places || [])
       .then((places) => {
+        console.log(places);
         setMydata([...places]);
       })
       .catch((err) => {
@@ -71,6 +72,7 @@ const KakaoMap = () => {
         });
       })
       .then((bookmarks) => {
+        console.log(bookmarks);
         setMarkers(bookmarks);
         setIsMyBookmark(true);
       });

@@ -66,7 +66,7 @@ const page = ({ params }) => {
 
   return (
     <div className="flex w-screen flex-col items-center justify-start">
-      <div className="h-[10vh] w-screen">
+      <div className="h-[15vh] w-screen">
         <div className="hidden h-full w-full items-center justify-center md:flex">
           <Link href={'/place'}>
             <button className="mx-4 my-auto box-border block rounded-md border-none bg-mint px-6 py-2 font-bold text-white hover:bg-mint/80">
@@ -79,7 +79,7 @@ const page = ({ params }) => {
             </button>
           </Link>
         </div>
-        <div className="flex h-full w-full flex-wrap items-center justify-center md:hidden">
+        <div className="my-4 flex h-3/5 w-full flex-wrap items-center justify-center md:hidden">
           {checkBoxList.map((item, idx) => (
             <MobileTagButton
               key={idx}
