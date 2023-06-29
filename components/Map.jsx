@@ -207,7 +207,7 @@ const KakaoMap = () => {
             level={Maplevel}
             draggable={true}
           >
-            <div className="absolute left-2 top-2 z-10 h-1/2 w-1/3">
+            <div className="absolute left-2 top-2 z-10 h-1/2 w-2/5 md:w-1/2">
               <div className="w-full rounded-lg border border-mint/60 bg-white/90 lg:w-1/2">
                 <SmallLogo />
                 {isMyBookmark ? (

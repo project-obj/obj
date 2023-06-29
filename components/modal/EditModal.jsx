@@ -23,8 +23,8 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
   const [checkedList, setCheckedList] = useState([]);
 
   const [wish, setWish] = useState('');
+  const [message, setMessage] = useState('');
 
-  console.log(checkedList);
   const checkedItemHandler = (value) => {
     if (checkedList.includes(value)) {
       setCheckedList(checkedList.filter((item) => item !== value));
@@ -42,15 +42,21 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      console.log('checkedList:', checkedList);
-      console.log(wish);
       editMyBookmark();
     },
     [checkedList, wish]
   );
 
-  const editMyBookmark = () =>
-    axios({
+  const editMyBookmark = async () => {
+    let tag = '';
+    if (checkedList.length === 1) {
+      tag = checkedList[0];
+    }
+    if (checkedList.length > 1) {
+      tag = checkedList.join(',');
+    }
+
+    return await axios({
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -59,16 +65,30 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
       url: `${process.env.NEXT_PUBLIC_SERVER}/user/${Cookies.get('userid')}`,
       data: {
         placeName: name,
-        tag: checkedList.join(','),
+        tag: tag,
         visit: !!wish ? wish : '가고 싶어요!',
       },
       withCredentials: true,
     })
       .then((res) => {
-        console.log('done');
+        if (res.data.success) {
+          setMessage('');
+          const newData = userDatas.filter((data) => id === userDatas.id);
+          const newArray = userDatas.filter((data) => id !== userDatas.id);
+
+          newData[0].tag = tag;
+          newData[0].visit = !!wish ? wish : '가고 싶어요!';
+
+          setUserDatas([...newData, ...newArray]);
+          closeModal();
+          return;
+        }
         return;
       })
-      .then((err) => {});
+      .catch(() => {
+        setMessage('오류가 발생했습니다. 잠시 후에 다시 시도해주세요.');
+      });
+  };
 
   return (
     <div
@@ -76,21 +96,23 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
       onClick={closeModal}
     >
       <div
-        className="z-60 h-9/12 w-4/5 min-w-[300px] rounded bg-white p-6  text-center shadow-lg" // z-index 값을 z-60으로 변경
+        className="z-60 h-9/12 w-4/5 min-w-[300px] rounded bg-white p-6 text-center  shadow-lg md:w-3/5" // z-index 값을 z-60으로 변경
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col items-center justify-center">
-          <h2 className="mb-2 font-extrabold">{name}</h2>
+          <h2 className="mb-2 text-[24px] font-extrabold text-mint-em">
+            {name}
+          </h2>
           <p>
-            <span className="text-mint">{cnt}</span>명이 등록했어요!
+            <span className="text-mint">{cnt}</span> 명이 북마크했어요!
           </p>
           <section className="w-full">
+            <h3 className="mx-auto mb-2 w-1/2 rounded bg-mint/70 text-center font-semibold text-white">
+              📌태그를 선택해주세요!
+            </h3>
             <form className="mx-auto w-full" onSubmit={onSubmit}>
-              <div className="flex w-full justify-around">
+              <div className="flex w-full justify-center">
                 <div className="min-w-[150px] px-4 py-3 font-bold">
-                  <h3 className="mb-2 rounded bg-mint/70 text-center font-semibold text-white">
-                    📌태그
-                  </h3>
                   {checkBoxList.map((item, idx) => (
                     <div className="checkbox" key={idx}>
                       <div className="relative mb-1 h-8">
@@ -111,9 +133,6 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
                   ))}
                 </div>
                 <div className="min-w-[150px] rounded px-4 py-3 font-bold">
-                  <h3 className="mb-2 rounded bg-gray/60 text-center font-semibold text-white">
-                    📌태그
-                  </h3>
                   {wishCheckList.map((item, idx) => (
                     <div className="radio" key={idx + item}>
                       <div className="relative mb-1 h-8">
@@ -125,7 +144,7 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
                           defaultChecked={
                             item === '가고 싶어요!' ? true : false
                           }
-                          className={`peer h-full w-full cursor-pointer appearance-none rounded-lg bg-light/20 transition-all duration-200 checked:bg-pink hover:bg-pink hover:text-white`}
+                          className={`peer h-full w-full cursor-pointer appearance-none rounded-lg bg-light/80 transition-all duration-200 checked:bg-pink hover:bg-pink hover:text-white`}
                           onClick={() => {
                             setWish(item);
                           }}
@@ -141,24 +160,23 @@ const EditModal = ({ id, name, closeModal, cnt, userDatas, setUserDatas }) => {
                   ))}
                 </div>
               </div>
-
-              <button type="submit">submit</button>
+              <h3 className="text-warning">{message}</h3>
+              <div className="flex items-end justify-center">
+                <div
+                  onClick={closeModal}
+                  className="mx-2 inline-block cursor-pointer rounded-full border-2 border-pink px-4 py-2 font-semibold text-pink hover:bg-pink hover:text-white"
+                >
+                  닫기
+                </div>
+                <button
+                  type="submit"
+                  className="mx-2 inline-block rounded-full border-2 border-mint px-4 py-2 font-semibold text-mint hover:bg-mint hover:text-white"
+                >
+                  수정
+                </button>
+              </div>
             </form>
           </section>
-          <div className="flex items-end justify-center">
-            <button
-              onClick={closeModal}
-              className="mx-2 inline-block rounded-full border-2 border-mint px-4 py-2 font-semibold text-mint hover:bg-mint hover:text-white"
-            >
-              닫기
-            </button>
-            <button
-              onClick={editMyBookmark}
-              className="mx-2 inline-block rounded-full border-2 border-warning px-4 py-2 font-semibold text-warning hover:bg-warning hover:text-white"
-            >
-              수정
-            </button>
-          </div>
         </div>
       </div>
     </div>
